@@ -178,7 +178,6 @@ eb      mydriver1!pivot-e+0x20+0x1c-4-3+2 e7
 ed    mydriver1!pivot  -e+0x20+0x1c-4 f0e48348
 ed mydriver1!pivot	   -e+0x20+0x1c 50ec8348
 bc *
-locateMyHandler
 ed mydriver1!ph+9 90909090
 ed mydriver1!ph+9 +4 90909090
 ed mydriver1!ph+9 +8 90909090
@@ -253,6 +252,7 @@ ed mydriver1!pivot +10 +8 +4 +4 90909090
 eb    mydriver1!pivot +10 +8 +4 +4+4 90
 eb    mydriver1!pivot +10 +8 +4 +4+4+1 90
 eb    mydriver1!pivot +10 +8 +4 +4+4 +2 90
+locateMyHandler
 """
 import os
 import time
@@ -458,7 +458,7 @@ def generatePaiWriteWindbgIns(rba):
     global windbgHookIns
     windbgHookIns = windbgHookIns.replace("jicunqizhuanyi", finalString)
 def replace_in_fileDef(old_string, new_string):
-    file_path = r'C:\Users\Administrator\Documents\Visual Studio 2017\Projects\MyDriver1\MyDriver1\src.c'
+    file_path = r'C:\Users\Administrator\Downloads\123\avscan\filter\avscan.c'
     with open(file_path, 'r', encoding='gbk') as file:
         content = file.read()
 
@@ -467,7 +467,7 @@ def replace_in_fileDef(old_string, new_string):
     with open(file_path, 'w', encoding='gbk') as file:
         file.write(content)
 def replace_in_fileDec(old_string, new_string):
-    file_path = r'C:\Users\Administrator\Documents\Visual Studio 2017\Projects\MyDriver1\MyDriver1\src.c'
+    file_path = r'C:\Users\Administrator\Downloads\123\avscan\filter\avscan.c'
     with open(file_path, 'r', encoding='gbk') as file:
         content = file.read()
 
@@ -476,7 +476,7 @@ def replace_in_fileDec(old_string, new_string):
     with open(file_path, 'w', encoding='gbk') as file:
         file.write(content)
 def replace_in_fileMain(old_string, new_string):
-    file_path = r'C:\Users\Administrator\Documents\Visual Studio 2017\Projects\MyDriver1\MyDriver1\src.c'
+    file_path = r'C:\Users\Administrator\Downloads\123\avscan\filter\avscan.c'
     with open(file_path, 'r', encoding='gbk') as file:
         content = file.read()
     if old_string in content:
@@ -487,7 +487,7 @@ def replace_in_fileMain(old_string, new_string):
         file.write(content)
 
 def CheckForContentExist(old_string):
-    file_path = r'C:\Users\Administrator\Documents\Visual Studio 2017\Projects\MyDriver1\MyDriver1\src.c'
+    file_path = r'C:\Users\Administrator\Downloads\123\avscan\filter\avscan.c'
     with open(file_path, 'r', encoding='gbk') as file:
         content = file.read()
 
