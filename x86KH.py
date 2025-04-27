@@ -458,7 +458,7 @@ def generatePaiWriteWindbgIns(rba):
     global windbgHookIns
     windbgHookIns = windbgHookIns.replace("jicunqizhuanyi", finalString)
 def replace_in_fileDef(old_string, new_string):
-    file_path = r'C:\Users\Administrator\Downloads\123\avscan\filter\avscan.c'
+    file_path = r'C:\Users\Administrator\Downloads\123\avscan\123\MyDriver1\src.c'
     with open(file_path, 'r', encoding='gbk') as file:
         content = file.read()
 
@@ -467,7 +467,7 @@ def replace_in_fileDef(old_string, new_string):
     with open(file_path, 'w', encoding='gbk') as file:
         file.write(content)
 def replace_in_fileDec(old_string, new_string):
-    file_path = r'C:\Users\Administrator\Downloads\123\avscan\filter\avscan.c'
+    file_path = r'C:\Users\Administrator\Downloads\123\avscan\123\MyDriver1\src.c'
     with open(file_path, 'r', encoding='gbk') as file:
         content = file.read()
 
@@ -476,7 +476,7 @@ def replace_in_fileDec(old_string, new_string):
     with open(file_path, 'w', encoding='gbk') as file:
         file.write(content)
 def replace_in_fileMain(old_string, new_string):
-    file_path = r'C:\Users\Administrator\Downloads\123\avscan\filter\avscan.c'
+    file_path = r'C:\Users\Administrator\Downloads\123\avscan\123\MyDriver1\src.c'
     with open(file_path, 'r', encoding='gbk') as file:
         content = file.read()
     if old_string in content:
@@ -487,7 +487,7 @@ def replace_in_fileMain(old_string, new_string):
         file.write(content)
 
 def CheckForContentExist(old_string):
-    file_path = r'C:\Users\Administrator\Downloads\123\avscan\filter\avscan.c'
+    file_path = r'C:\Users\Administrator\Downloads\123\avscan\123\MyDriver1\src.c'
     with open(file_path, 'r', encoding='gbk') as file:
         content = file.read()
 
