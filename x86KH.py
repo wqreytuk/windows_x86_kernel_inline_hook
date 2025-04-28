@@ -252,6 +252,28 @@ ed mydriver1!pivot +10 +8 +4 +4 90909090
 eb    mydriver1!pivot +10 +8 +4 +4+4 90
 eb    mydriver1!pivot +10 +8 +4 +4+4+1 90
 eb    mydriver1!pivot +10 +8 +4 +4+4 +2 90
+eb mydriver1!pivot+0x2c 90
+eb mydriver1!pivot+0x2c+1 90
+eb mydriver1!pivot+0x2c+2 90
+eb mydriver1!pivot+0x46  90
+eb mydriver1!pivot+0x46 +1 90
+eb mydriver1!pivot+0x46 +2 90
+eb mydriver1!pivot+0x2c 81
+eb mydriver1!pivot+0x2c+1 ec
+eb mydriver1!pivot+0x2c+2 0
+eb mydriver1!pivot+0x2c+3 2
+eb mydriver1!pivot+0x2c+3+1 0
+eb mydriver1!pivot+0x2c+3+2 0
+
+
+
+ew  mydriver1!pivot+0x32 f889
+eb mydriver1!pivot+0x32+2 	5
+eb mydriver1!pivot+0x32+2+1 20
+eb mydriver1!pivot+0x32+2+2 0
+eb mydriver1!pivot+0x32+2+3 0
+eb mydriver1!pivot+0x32+2+4 0
+eb mydriver1!pivot+0x32+2+5 50
 locateMyHandler
 """
 import os
@@ -458,7 +480,7 @@ def generatePaiWriteWindbgIns(rba):
     global windbgHookIns
     windbgHookIns = windbgHookIns.replace("jicunqizhuanyi", finalString)
 def replace_in_fileDef(old_string, new_string):
-    file_path = r'C:\Users\Administrator\Downloads\123\avscan\123\MyDriver1\src.c'
+    file_path = r'C:\Users\x\Desktop\imp\WorkBackup\holedig\x86_hook_project\MyDriver1\src.c'
     with open(file_path, 'r', encoding='gbk') as file:
         content = file.read()
 
@@ -467,7 +489,7 @@ def replace_in_fileDef(old_string, new_string):
     with open(file_path, 'w', encoding='gbk') as file:
         file.write(content)
 def replace_in_fileDec(old_string, new_string):
-    file_path = r'C:\Users\Administrator\Downloads\123\avscan\123\MyDriver1\src.c'
+    file_path = r'C:\Users\x\Desktop\imp\WorkBackup\holedig\x86_hook_project\MyDriver1\src.c'
     with open(file_path, 'r', encoding='gbk') as file:
         content = file.read()
 
@@ -476,7 +498,7 @@ def replace_in_fileDec(old_string, new_string):
     with open(file_path, 'w', encoding='gbk') as file:
         file.write(content)
 def replace_in_fileMain(old_string, new_string):
-    file_path = r'C:\Users\Administrator\Downloads\123\avscan\123\MyDriver1\src.c'
+    file_path = r'C:\Users\x\Desktop\imp\WorkBackup\holedig\x86_hook_project\MyDriver1\src.c'
     with open(file_path, 'r', encoding='gbk') as file:
         content = file.read()
     if old_string in content:
@@ -487,7 +509,7 @@ def replace_in_fileMain(old_string, new_string):
         file.write(content)
 
 def CheckForContentExist(old_string):
-    file_path = r'C:\Users\Administrator\Downloads\123\avscan\123\MyDriver1\src.c'
+    file_path = r'C:\Users\x\Desktop\imp\WorkBackup\holedig\x86_hook_project\MyDriver1\src.c'
     with open(file_path, 'r', encoding='gbk') as file:
         content = file.read()
 
@@ -676,6 +698,13 @@ def main():
     #ohc = "\n".join(iter(input, ""))  # Stop on empty line
     ohc=''
 
+    # enable manual mode
+    enable_maual_mode=False
+    if enable_maual_mode==True:
+        text = "Hello, world!"
+
+        with open("output.txt", "w") as f:
+            f.write(text)
 
     while True:
         if os.path.exists(r'c:\users\public\mylogfile.txt'):
@@ -693,7 +722,10 @@ def main():
 
     os.remove(r'c:\users\public\mylogfile.txt')
 
-
+    # print('please exeucte this command in windbg')
+    # cmd='db /c 1 '+args.mn+'+' + hex(args.hba) + ' l0n'
+    # print(cmd)
+    # ohc = "\n".join(iter(input, ""))  # Stop on empty line
 
 
     generateOhcWriteWindbgIns(ohc,args.hba,args.mn)
