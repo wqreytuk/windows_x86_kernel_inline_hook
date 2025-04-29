@@ -638,7 +638,7 @@ def placedholderrandom12313FuncCodeGen(hba):
                     r'//placedholderrandom12313FunccodePreventOptimizeAddMark' + '\n' + r'placedholderrandom12313_' + hba + r'(NULL);')
 
 
-def KHHookHandlerFuncCodeGen(hba,rba):
+def KHHookHandlerFuncCodeGen(hba,rba,comment):
     template = """
     PVOID KHHookHandler(PVOID a1,PVOID a2,PVOID a3,PVOID a4,PVOID a5) {PBYTE _rsp = a5;
 	if (a1 == NULL)return 0;
@@ -659,6 +659,7 @@ def KHHookHandlerFuncCodeGen(hba,rba):
     if rba=="''":
         finas="PBYTE _rcx=a1;PBYTE _rdx=a2;PBYTE _r8=a3;PBYTE _r9=a4;"
         template = template.replace("return NULL;", finas + "\n\nreturn NULL;")
+    template = template.replace('PVOID KHHookHandler','// '+comment+'\n'+'PVOID KHHookHandler')
     template = template.replace(r'myprintf("123\n")', r'myprintf("' + hba + r'\n")');
     template = template.replace(r'PVOID KHHookHandler(',
                                 r'PVOID KHHookHandler_' + hba + r'(');
@@ -679,9 +680,11 @@ def main():
     parser.add_argument("-rba", required=True, help="register to be adjusted")
     parser.add_argument("-mn", required=True, help="module name")
     parser.add_argument("-pn", required=True, help="module name")
+    parser.add_argument("-comment", required=True, help="function comment")
 
     args = parser.parse_args()
     global windbgHookIns
+
 
     originalHookCodeLen = args.hea - args.hba
     if originalHookCodeLen < 6:
@@ -756,7 +759,7 @@ def main():
     placedholderrandom12313FuncCodeGen(hex(args.hba))
     agsduigasuidgasiufgiagFuncCodeGen(hex(args.hba))
     PivotFuncCodeGen(hex(args.hba))
-    KHHookHandlerFuncCodeGen(hex(args.hba),args.rba)
+    KHHookHandlerFuncCodeGen(hex(args.hba),args.rba,args.comment)
     windbgHookIns = windbgHookIns.replace('locateMyHandler', 'u mydriver1!KHHookHandler_' + hex(args.hba))
     windbgHookIns=windbgHookIns.replace("PBYTE _''=a1;",'\n')
     modulename='PROCEXP152'
