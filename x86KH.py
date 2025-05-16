@@ -273,8 +273,7 @@ eb mydriver1!pivot+0x32+2+1 20
 eb mydriver1!pivot+0x32+2+2 0
 eb mydriver1!pivot+0x32+2+3 0
 eb mydriver1!pivot+0x32+2+4 0
-eb mydriver1!pivot+0x32+2+5 50
-locateMyHandler
+eb mydriver1!pivot+0x32+2+5 50 
 """
 import os
 import time
@@ -302,7 +301,7 @@ def read_file_when_done(file_path):
             return file.read()
     else:
         raise Exception("File is still being written to!")
-ppInsDict = {"push rax": "5048", "push rbx": "53", "push rcx": "51", "push rdx": "52", "push rsi": "56", "push rdi": "57", "push rbp": "55", "push rsp": "54", "push r8 ": "5041", "push r9 ": "5141", "push r10": "5241", "push r11": "5341", "push r12": "5441", "push r13": "5541", "push r14": "5641", "push r15": "5741", "pop r15": "5f41", "pop r14": "5e41", "pop r13": "5d41", "pop r12": "5c41", "pop r11": "5b41", "pop r10": "5a41", "pop r9": "5941", "pop r8": "5841", "pop rsp": "5c", "pop rbp": "5d", "pop rdi": "5f", "pop rsi": "5e", "pop rdx": "5a", "pop rcx": "59", "pop rbx": "5b", "pop rax": "58"}
+ppInsDict = {"pop ecx": "59", "push edx": "5a", "push edi": "57", "push rdx": "52", "push rsi": "56", "push rdi": "57", "push rbp": "55", "push rsp": "54", "push r8 ": "5041", "push r9 ": "5141", "push r10": "5241", "push r11": "5341", "push r12": "5441", "push r13": "5541", "push r14": "5641", "push r15": "5741", "pop r15": "5f41", "pop r14": "5e41", "pop r13": "5d41", "pop r12": "5c41", "pop r11": "5b41", "pop r10": "5a41", "pop r9": "5941", "pop r8": "5841", "pop rsp": "5c", "pop rbp": "5d", "pop rdi": "5f", "pop rsi": "5e", "pop rdx": "5a", "pop rcx": "59", "pop rbx": "5b", "pop rax": "58"}
 import argparse
 
 def parse_hex(value):
@@ -420,7 +419,14 @@ def generateOhcWriteWindbgIns(ohc,hba,mb):
         if i.strip().__len__() < 2:
             continue
         finalString = finalString + "eb mydriver1!ph+0x4a+" + hex(index) + " " + i.split(" ")[2] + "\n"
-        index = index +1
+        index = index + 1
+    index=0
+    finalString2=''
+    for i in lineArray:
+        if i.strip().__len__() < 2:
+            continue
+        finalString2 = finalString2 + "eb oriplaceholder+" + hex(index) + " " + i.split(" ")[2] + "\n"
+        index = index + 1
     if rip!='':
         if realoffsetsCall != 0:
             offsets = hex(realoffsetsCall)
@@ -430,14 +436,15 @@ def generateOhcWriteWindbgIns(ohc,hba,mb):
         finalString = finalString + "ed mydriver1!ph+0x4a+" + hex(offset) + " " + targett+'-0n'+ str(aldcnt) +'-mydriver1!ph-0x4a'+ "\n"
     global windbgHookIns
     windbgHookIns = windbgHookIns.replace("yuanshidaimaplaceholder", finalString)
-def generatePaiWriteWindbgIns(rba):
+    return finalString2
+def generatePaiWriteWindbgIns(rba,hba):
     # 增加对栈寄存器的支持  16个push 就是16*8 字节，那么rsp需要先+16*8字节，才能恢复到hook前的水平，然后需要根据参数，来确定汇编代码
     # 栈寄存器的参数应该长这个样子  s-28就是原始参数是rsp-28  s+28  原始参数就是rsp+28
     if rba.__len__() < 3:
         return
     pai = ""
     reg = rba.split("/")
-    popRegInsArr = ["pop rcx", "pop rdx", "pop r8", "pop r9"]
+    popRegInsArr = ["pop ecx", "pop edx", "pop r8", "pop r9"]
     index = 0
     realIndex=0
     finalString = ""
@@ -472,45 +479,46 @@ def generatePaiWriteWindbgIns(rba):
         writeIns = "eb"
         if ppInsDict[i].__len__() == 4:
             writeIns = "ew"
-        finalString = finalString + writeIns + " mydriver1!pivot+" + hex(index) + " " + ppInsDict[i] + "\n"
+        finalString = finalString + writeIns + " mydriver1!pivot_" + hba+"+"+hex(index) + " " + ppInsDict[i] + "\n"
         if writeIns == "ew":
             index = index + 2
         else:
             index = index + 1
     global windbgHookIns
     windbgHookIns = windbgHookIns.replace("jicunqizhuanyi", finalString)
+    return finalString
 def replace_in_fileDef(old_string, new_string):
     file_path = r'C:\Users\x\Desktop\imp\WorkBackup\holedig\x86_hook_project\MyDriver1\src.c'
-    with open(file_path, 'r', encoding='gbk') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
 
     content = content.replace(old_string, new_string)
 
-    with open(file_path, 'w', encoding='gbk') as file:
+    with open(file_path, 'w', encoding='utf-8') as file:
         file.write(content)
 def replace_in_fileDec(old_string, new_string):
     file_path = r'C:\Users\x\Desktop\imp\WorkBackup\holedig\x86_hook_project\MyDriver1\src.c'
-    with open(file_path, 'r', encoding='gbk') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
 
     content = content.replace(old_string, new_string)
 
-    with open(file_path, 'w', encoding='gbk') as file:
+    with open(file_path, 'w', encoding='utf-8') as file:
         file.write(content)
 def replace_in_fileMain(old_string, new_string):
     file_path = r'C:\Users\x\Desktop\imp\WorkBackup\holedig\x86_hook_project\MyDriver1\src.c'
-    with open(file_path, 'r', encoding='gbk') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
     if old_string in content:
         a=1
     content = content.replace(old_string, new_string)
 
-    with open(file_path, 'w', encoding='gbk') as file:
+    with open(file_path, 'w', encoding='utf-8') as file:
         file.write(content)
 
 def CheckForContentExist(old_string):
     file_path = r'C:\Users\x\Desktop\imp\WorkBackup\holedig\x86_hook_project\MyDriver1\src.c'
-    with open(file_path, 'r', encoding='gbk') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
 
     if content.split(old_string, 1).__len__() > 1:
@@ -640,7 +648,7 @@ def placedholderrandom12313FuncCodeGen(hba):
 
 def KHHookHandlerFuncCodeGen(hba,rba,comment):
     template = """
-    PVOID KHHookHandler(PVOID a1,PVOID a2,PVOID a3,PVOID a4,PVOID a5) {PBYTE _rsp = a5;
+    PVOID __fastcall KHHookHandler(PVOID a1,PVOID a2,PVOID a3,PVOID a4,PVOID a5) {PBYTE _rsp = a5;
 	if (a1 == NULL)return 0;
 
 	return NULL;
@@ -659,14 +667,14 @@ def KHHookHandlerFuncCodeGen(hba,rba,comment):
     if rba=="''":
         finas="PBYTE _rcx=a1;PBYTE _rdx=a2;PBYTE _r8=a3;PBYTE _r9=a4;"
         template = template.replace("return NULL;", finas + "\n\nreturn NULL;")
-    template = template.replace('PVOID KHHookHandler','// '+comment+'\n'+'PVOID KHHookHandler')
+    template = template.replace('PVOID __fastcall KHHookHandler','// '+comment+'\n'+'PVOID __fastcall KHHookHandler')
     template = template.replace(r'myprintf("123\n")', r'myprintf("' + hba + r'\n")');
-    template = template.replace(r'PVOID KHHookHandler(',
-                                r'PVOID KHHookHandler_' + hba + r'(');
+    template = template.replace(r'PVOID __fastcall KHHookHandler(',
+                                r'PVOID __fastcall KHHookHandler_' + hba + r'(');
     replace_in_fileDef('//KHHookHandlerFunccodeDefineAddMark',
                     r'//KHHookHandlerFunccodeDefineAddMark' + '\n' + template)
     replace_in_fileDec('//KHHookHandlerFunccodeDeclareAddMark',
-                    r'//KHHookHandlerFunccodeDeclareAddMark' + '\n' + r'PVOID KHHookHandler_' + hba + r'(PVOID a1,PVOID a2,PVOID a3,PVOID a4,PVOID a5);')
+                    r'//KHHookHandlerFunccodeDeclareAddMark' + '\n' + r'PVOID __fastcall KHHookHandler_' + hba + r'(PVOID a1,PVOID a2,PVOID a3,PVOID a4,PVOID a5);')
     replace_in_fileMain('//KHHookHandlerFunccodePreventOptimizeAddMark',
                     r'//KHHookHandlerFunccodePreventOptimizeAddMark' + '\n' + r'KHHookHandler_' + hba + r'(NULL,NULL,NULL,NULL,NULL);')
 
@@ -731,8 +739,8 @@ def main():
     # ohc = "\n".join(iter(input, ""))  # Stop on empty line
 
 
-    generateOhcWriteWindbgIns(ohc,args.hba,args.mn)
-    generatePaiWriteWindbgIns(args.rba)
+    fstr2=generateOhcWriteWindbgIns(ohc,args.hba,args.mn)
+    keepthisfordinal=generatePaiWriteWindbgIns(args.rba,hex(args.hba))
     windbgHookIns = windbgHookIns.replace("mydriver1!ph", "mydriver1!ph_" + hex(args.hba))
     windbgHookIns = windbgHookIns.replace("mydriver1!pivot", "mydriver1!pivot_" + hex(args.hba))
     windbgHookIns = windbgHookIns.replace("819f5d66ab064d1991d4ab4ed5c31db6", hex(args.hba) + '+f312be6ae61f4caf8305ffedc3a0f762')
@@ -760,7 +768,6 @@ def main():
     agsduigasuidgasiufgiagFuncCodeGen(hex(args.hba))
     PivotFuncCodeGen(hex(args.hba))
     KHHookHandlerFuncCodeGen(hex(args.hba),args.rba,args.comment)
-    windbgHookIns = windbgHookIns.replace('locateMyHandler', 'u mydriver1!KHHookHandler_' + hex(args.hba))
     windbgHookIns=windbgHookIns.replace("PBYTE _''=a1;",'\n')
     modulename='PROCEXP152'
     windbgHookIns=windbgHookIns.replace('f312be6ae61f4caf8305ffedc3a0f762',args.mn)
@@ -785,10 +792,22 @@ def main():
 
     new_ins=new_ins.replace('mydriver1',args.pn)
     new_ins=new_ins.replace('PBYTE _r8=a2','PBYTE _r8=a3')
-    print('/*\n' + new_ins + '\n*/')
+    new_ins=new_ins+"\neb "+args.pn+"!pivot_"+hex(args.hba)+ "+3a 55"
+    if keepthisfordinal==None:
+        keepthisfordinal='\n'
+    new_ins=new_ins+"\n"+keepthisfordinal
+
+    windbgHookIns = windbgHookIns.replace('locateMyHandler', 'u mydriver1!KHHookHandler_' + hex(args.hba))
+    windbgHookIns = windbgHookIns.replace('locateMyHandler', 'u mydriver1!KHHookHandler_' + hex(args.hba))
+    new_ins=new_ins+"\n"+'u mydriver1!KHHookHandler_' + hex(args.hba)
+    new_ins=new_ins.replace('mydriver1',args.pn)
+    fstr2=fstr2.replace('oriplaceholder',args.mn+ "+"+hex(args.hba))
+    new_ins=new_ins.replace('_' + hex(args.hba)+'_' + hex(args.hba),'_' + hex(args.hba))
+    new_ins='/*\n' + new_ins + '\n*/'+"\n//restore command\n/*\n"+fstr2+"*/"
+    print(new_ins)
     with open("output.txt", "w", encoding="utf-8") as file:
 
-        file.write('/*\n' + new_ins + '\n*/')
+        file.write(new_ins)
 
 
 if __name__ == "__main__":
