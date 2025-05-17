@@ -6,13 +6,22 @@ hook ntopenfile
 -hba 0029a411 -hea 0029a41b -rba '' -mn nt -pn x86kh -comment "break before calling iofcalldriver at IopParseDevice"
 ```
 
-x86不同于x64，除了thiscall用了ecx传递第一个参数，其余的调用方式都是通过esp传递参数的，所以基本上用不上-rba选项
+hook handler的calling convention为fastcall，如下图所示
 
-如下图所示，eax就是hook位置的esp原始值，在hookhandler中，需要使用a1来访问被hook的函数的参数
+![image](https://github.com/user-attachments/assets/43a11884-6e0f-46fe-bf22-6606ee1ee9fa)
 
-![image](https://github.com/user-attachments/assets/90025098-df00-4c73-a0d2-390cf96eebfb)
+在rba选项中，我们可以最多传送两个寄存器进去，通过ecx和edx传输给hook handler，原始的ebp和esp值为固定的a3和a4，如果还需要其他的寄存器，我后面再更新
 
-`[esp+4]`就是第一个参数，+8是第二个参数，依次类推
+如果我们hook的是一个函数的开始部分，比如说nt!NtCreateUserProcess，该函数有11个参数，那么我们获取每一个参数的方式就是
+
+```c
+b4 esp=a4;
+b4 p1 = d(esp+1*4);
+b4 p2 = d(esp+2*4);
+...
+```
+
+也就是说获取第几个参数，就是用参数的inex*4+esp取值即可
 
 
 # 2025-04-29更新  扩大handler调用前的保留栈空间   解决随机BSOD问题
